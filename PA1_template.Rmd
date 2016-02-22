@@ -193,32 +193,37 @@ We see that the histogram is single-peaked instead of being double-peaked as in 
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
+1. Creating a new factor variable in the dataset with two levels -- "weekday" and "weekend" indicating whether a given date is a weekday or weekend day.
+
+```{r weekday, echo= TRUE, warning=FALSE, message=FALSE}
+
+# Check if a day is weekday or not
+weekdays <- isWeekday(indata_updated$date, wday = 1:5)
+
+# Add a new coloumn with logical values to specify if weekday or not
+indata_updated_days <- indata_updated[ , day_logical := weekdays]
+
+# Adding a new factor variable with "weekday" and "weekend" levels 
+indata_updated_days <- indata_updated_days[ day_logical == TRUE, day := "weekday"]
+indata_updated_days <- indata_updated_days[ day_logical == FALSE, day := "weekend"]
+
+```
+
+2. Making a panel plot containing a time series plot of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis).
+
 ```{r tsplot2, echo= TRUE, warning=FALSE, message=FALSE}
 
-indata_updated<- indata_updated[ , TotalSteps:= sum(steps), by=date]
+# Calculating average steps in every 5 minute interval on weekdays and weekends
 
-WeekDay <- c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday")
-WeekEndDay <- c("Saturday", "Sunday")
+indata_interval_days <- indata_updated_days[, .( avg_steps_interval= mean(steps)), by= .(day, interval)]
 
-datWeek <- indata_updated[weekdays(indata$date) %in% WeekDay]
-datWeekend <- indata_updated[weekdays(indata$date) %in% WeekEndDay]
+# Making the Time series plot for the data
+ts_days <- ggplot(data = indata_interval_days, aes(x=interval, y=avg_steps_interval)) +
+  geom_line(colour="red") +
+  facet_grid(day ~ . )
 
-datWeek <- datWeek[, meanSteps:= mean(steps), by=interval]
-datWeekend <- datWeekend[, meanSteps:= mean(steps), by=interval]
+print(ts_days)
 
-datWeek <- datWeek[, `:=` (DayType="weekday")]
-datWeekend <- datWeekend[, `:=` (DayType="weekend")]
-
-meanWeek <- mean(datWeek$meanSteps)
-meanWeekend <- mean(datWeekend$meanSteps)
-
-medianWeek <- median(datWeek$meanSteps)
-medianWeekend <- median(datWeekend$meanSteps)
-
-library(lattice)
-indata_updated <- merge(datWeek, datWeekend, by=names(datWeek), all=TRUE)
-indata_updated <- indata_updated[order(interval,DayType)]
-with(indata_updated, xyplot(meanSteps ~ interval | DayType, layout=c(1,2), type="l", xlab="Interval", ylab = "Average number of steps"))
 
 
 

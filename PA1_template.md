@@ -306,3 +306,37 @@ We see that the histogram is single-peaked instead of being double-peaked as in 
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
+1. Creating a new factor variable in the dataset with two levels -- "weekday" and "weekend" indicating whether a given date is a weekday or weekend day.
+
+
+```r
+# Check if a day is weekday or not
+weekdays <- isWeekday(indata_updated$date, wday = 1:5)
+
+# Add a new coloumn with logical values to specify if weekday or not
+indata_updated_days <- indata_updated[ , day_logical := weekdays]
+
+# Adding a new factor variable with "weekday" and "weekend" levels 
+indata_updated_days <- indata_updated_days[ day_logical == TRUE, day := "weekday"]
+indata_updated_days <- indata_updated_days[ day_logical == FALSE, day := "weekend"]
+```
+
+2. Making a panel plot containing a time series plot of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis).
+
+
+```r
+# Calculating average steps in every 5 minute interval on weekdays and weekends
+
+indata_interval_days <- indata_updated_days[, .( avg_steps_interval= mean(steps)), by= .(day, interval)]
+
+# Making the Time series plot for the data
+ts_days <- ggplot(data = indata_interval_days, aes(x=interval, y=avg_steps_interval)) +
+  geom_line(colour="red") +
+  facet_grid(day ~ . )
+
+print(ts_days)
+```
+
+![](PA1_template_files/figure-html/tsplot2-1.png) 
+
+
