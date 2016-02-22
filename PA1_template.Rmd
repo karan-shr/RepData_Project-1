@@ -17,7 +17,7 @@ In this section we setup R working environment by loading the required libraries
 
 library(data.table)
 library(ggplot2)
-
+library(timeDate)
 ```
 
 
@@ -191,5 +191,37 @@ We see that the histogram is single-peaked instead of being double-peaked as in 
 \
 
 
-
 ## Are there differences in activity patterns between weekdays and weekends?
+
+```{r tsplot2, echo= TRUE, warning=FALSE, message=FALSE}
+
+indata_updated<- indata_updated[ , TotalSteps:= sum(steps), by=date]
+
+WeekDay <- c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday")
+WeekEndDay <- c("Saturday", "Sunday")
+
+datWeek <- indata_updated[weekdays(indata$date) %in% WeekDay]
+datWeekend <- indata_updated[weekdays(indata$date) %in% WeekEndDay]
+
+datWeek <- datWeek[, meanSteps:= mean(steps), by=interval]
+datWeekend <- datWeekend[, meanSteps:= mean(steps), by=interval]
+
+datWeek <- datWeek[, `:=` (DayType="weekday")]
+datWeekend <- datWeekend[, `:=` (DayType="weekend")]
+
+meanWeek <- mean(datWeek$meanSteps)
+meanWeekend <- mean(datWeekend$meanSteps)
+
+medianWeek <- median(datWeek$meanSteps)
+medianWeekend <- median(datWeekend$meanSteps)
+
+library(lattice)
+indata_updated <- merge(datWeek, datWeekend, by=names(datWeek), all=TRUE)
+indata_updated <- indata_updated[order(interval,DayType)]
+with(indata_updated, xyplot(meanSteps ~ interval | DayType, layout=c(1,2), type="l", xlab="Interval", ylab = "Average number of steps"))
+
+
+
+```
+
+

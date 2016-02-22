@@ -12,6 +12,7 @@ In this section we setup R working environment by loading the required libraries
 ```r
 library(data.table)
 library(ggplot2)
+library(timeDate)
 ```
 
 
@@ -303,5 +304,5 @@ We see that the histogram is single-peaked instead of being double-peaked as in 
 \
 
 
-
 ## Are there differences in activity patterns between weekdays and weekends?
+
