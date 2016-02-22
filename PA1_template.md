@@ -192,6 +192,111 @@ max_interval
 
 ## Imputing missing values
 
+1. The total number of missing values in the dataset
+
+
+```r
+total_na <- indata[, .( total_na_indata = sum(is.na(steps)) )]
+
+total_na
+```
+
+```
+##    total_na_indata
+## 1:            2304
+```
+  So the total no. of **NAs** in steps data is **2304**.
+  
+2. In order to fill the missing values in the dataset, I calculate the mean steps in an interval across all the days (not considering the NAs) and assigning the mean value for that interval to the indices where NAs appear in that interval.
+
+3. The updated dataset after replacing **NAs** with mean values is called *indata_updated*.
+
+
+```r
+# Calculating average steps in an interval and adding column to data
+indata_temp <- indata[ , mean_steps_interval := mean(steps, na.rm = TRUE), by= interval]
+
+print(indata_temp)
+```
+
+```
+##        steps       date interval mean_steps_interval
+##     1:    NA 2012-10-01        0           1.7169811
+##     2:    NA 2012-10-01        5           0.3396226
+##     3:    NA 2012-10-01       10           0.1320755
+##     4:    NA 2012-10-01       15           0.1509434
+##     5:    NA 2012-10-01       20           0.0754717
+##    ---                                              
+## 17564:    NA 2012-11-30     2335           4.6981132
+## 17565:    NA 2012-11-30     2340           3.3018868
+## 17566:    NA 2012-11-30     2345           0.6415094
+## 17567:    NA 2012-11-30     2350           0.2264151
+## 17568:    NA 2012-11-30     2355           1.0754717
+```
+
+```r
+# Replacing NAs by appropriate mean value
+indata_updated <- indata_temp[ is.na(steps), steps := mean_steps_interval]
+
+print(indata_updated)
+```
+
+```
+##        steps       date interval mean_steps_interval
+##     1:     1 2012-10-01        0           1.7169811
+##     2:     0 2012-10-01        5           0.3396226
+##     3:     0 2012-10-01       10           0.1320755
+##     4:     0 2012-10-01       15           0.1509434
+##     5:     0 2012-10-01       20           0.0754717
+##    ---                                              
+## 17564:     4 2012-11-30     2335           4.6981132
+## 17565:     3 2012-11-30     2340           3.3018868
+## 17566:     0 2012-11-30     2345           0.6415094
+## 17567:     0 2012-11-30     2350           0.2264151
+## 17568:     1 2012-11-30     2355           1.0754717
+```
+
+4. Histogram of the total number of steps taken per day after removing NAs:
+
+
+```r
+steps_perday_updated <- indata_updated[ ,.(total_steps= sum(steps,na.rm = TRUE)), by= date]
+
+
+hist.steps_perday_updated <- ggplot(data = steps_perday_updated, aes(total_steps)) + 
+  geom_histogram(binwidth=2000,colour="red",fill="white")
+
+print(hist.steps_perday_updated)
+```
+
+![](PA1_template_files/figure-html/removing_NA_hist-1.png) 
+
+\
+
+
+5. Mean and Median of total number of steps taken per day after removing NAs:
+
+```r
+summary.steps_perday_updated <- steps_perday_updated[, .( mean_steps= mean(total_steps, na.rm = TRUE),
+                                                  median_steps= median(total_steps, na.rm = TRUE))
+                                             ]
+# Mean of total no. of steps taken per day:
+summary.steps_perday_updated$mean_steps
+```
+
+```
+## [1] 10749.77
+```
+
+```r
+# Median of total no. of steps taken per day:
+summary.steps_perday_updated$median_steps
+```
+
+```
+## [1] 10641
+```
+
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
