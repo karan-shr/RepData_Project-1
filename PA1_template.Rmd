@@ -92,6 +92,36 @@ So the **Mean** and **Median** of total no. of steps taken per day are **9354.23
 
 ## What is the average daily activity pattern?
 
+1. Calculating the average number of steps taken (averaged across all days) in all 5-minute intervals. Given that a day has 1440 minutes, we should have 288 five minutes intervals in a day.
+
+2. The desired time-series plot is also presented in the R-code chunk below.
+
+3. The 5 minute interval which contains the maximum number of steps is also calculated in the code chunk.
+
+```{r average-intervals, echo= TRUE, warning=FALSE, message=FALSE}
+
+avg_steps_interval <- indata[, .( mean_steps_interval= mean(steps, na.rm = TRUE)), by= interval]
+
+# Average no. of steps in every interval across all days
+print(avg_steps_interval)
+
+
+# Time series
+ts_avg_interval <- ggplot(data = avg_steps_interval, aes(x=interval, y=mean_steps_interval)) +
+  geom_line(colour="red", size = 1.2) +
+  geom_point(colour="black")
+
+print(ts_avg_interval)
+
+
+# Which 5 minute interval contains the maximum number of steps
+max_interval_index <- which.max(avg_steps_interval$mean_steps_interval) #calc the index
+max_interval <- avg_steps_interval$interval[max_interval_index]
+max_interval
+
+```
+
+
 
 
 ## Imputing missing values
