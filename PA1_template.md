@@ -101,7 +101,7 @@ hist.steps_perday <- ggplot(data = steps_perday, aes(total_steps)) +
 print(hist.steps_perday)
 ```
 
-![](PA1_template_files/figure-html/steps/day-hist-1.png) 
+![](PA1_template_files/figure-html/steps-perday-hist-1.png) 
 
 \
 
