@@ -96,7 +96,7 @@ So the **Mean** and **Median** of total no. of steps taken per day are **9354.23
 
 2. The desired time-series plot is also presented in the R-code chunk below.
 
-3. The 5 minute interval which contains the maximum number of steps is also calculated in the code chunk.
+3. The 5 minute interval which contains the maximum number of steps (variable *max_interval* gives the value) is also calculated in the code chunk.
 
 ```{r average-intervals, echo= TRUE, warning=FALSE, message=FALSE}
 
@@ -114,14 +114,15 @@ ts_avg_interval <- ggplot(data = avg_steps_interval, aes(x=interval, y=mean_step
 print(ts_avg_interval)
 
 
-# Which 5 minute interval contains the maximum number of steps
+# Which 5 minute interval contains the maximum number of steps (var= max_interval)
 max_interval_index <- which.max(avg_steps_interval$mean_steps_interval) #calc the index
 max_interval <- avg_steps_interval$interval[max_interval_index]
+
 max_interval
 
 ```
 
-
+\
 
 
 ## Imputing missing values
