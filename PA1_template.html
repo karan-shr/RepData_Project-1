@@ -251,6 +251,9 @@ summary.steps_perday_updated$mean_steps</code></pre>
 <pre class="r"><code># Median of total no. of steps taken per day:
 summary.steps_perday_updated$median_steps</code></pre>
 <pre><code>## [1] 10641</code></pre>
+<p>So the <strong>Mean</strong> and <strong>Median</strong> of total no. of steps taken per day (after removing NAs) are <strong>10749.77</strong> and <strong>10641</strong> respectively.</p>
+<p>We see that the histogram is single-peaked instead of being double-peaked as in the case where NAs had not been removed. Because NAs were earlier replaced by zeros instead of being replaced by mean values, the mean and median in the earlier case were lower (shifted towards zero) than in the case where NAs were replaced by average date.</p>
+<p><br /></p>
 </div>
 <div id="are-there-differences-in-activity-patterns-between-weekdays-and-weekends" class="section level2">
 <h2>Are there differences in activity patterns between weekdays and weekends?</h2>

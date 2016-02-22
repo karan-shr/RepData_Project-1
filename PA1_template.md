@@ -296,6 +296,11 @@ summary.steps_perday_updated$median_steps
 ```
 ## [1] 10641
 ```
+So the **Mean** and **Median** of total no. of steps taken per day (after removing NAs) are **10749.77** and **10641** respectively.  
+
+We see that the histogram is single-peaked instead of being double-peaked as in the case where NAs had not been removed. Because NAs were earlier replaced by zeros instead of being replaced by mean values, the mean and median in the earlier case were lower (shifted towards zero) than in the case where NAs were replaced by average date.
+
+\
 
 
 
